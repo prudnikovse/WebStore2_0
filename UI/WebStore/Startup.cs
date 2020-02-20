@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebStore.Clients;
 using WebStore.DAL.Context;
 using WebStore.Data;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Services;
+using WebStore.Interfaces.Api;
 using WebStore.Interfaces.Services;
 
 namespace WebStore
@@ -30,6 +32,8 @@ namespace WebStore
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<ICartService, CookieCartService>();
             services.AddScoped<IOrderService, SqlOrderService>();
+
+            services.AddScoped<IValuesService, ValuesClient>();
 
             services.AddIdentity<User, Role>()
                .AddEntityFrameworkStores<WebStoreContext>()
