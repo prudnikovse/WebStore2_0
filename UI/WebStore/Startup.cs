@@ -27,8 +27,8 @@ namespace WebStore
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreContextInitializer>();
 
-            services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
-            services.AddScoped<IProductData, SqlProductData>();
+            services.AddSingleton<IEmployeesData, EmployeesClient>();
+            services.AddScoped<IProductData, ProductsClient>();
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<ICartService, CookieCartService>();
             services.AddScoped<IOrderService, SqlOrderService>();
