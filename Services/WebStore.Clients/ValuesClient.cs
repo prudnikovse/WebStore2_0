@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using WebStore.Clients.Base;
 using WebStore.Domain.Consts;
 using WebStore.Interfaces.Api;
 
@@ -13,7 +12,7 @@ namespace WebStore.Clients
     public class ValuesClient : BaseClient, IValuesService
     {
         public ValuesClient(IConfiguration config) 
-            : base(config, ControllerAddressConsts.ValuesController)
+            : base(config, WebApiConsts.Values)
         {
         }
 
@@ -37,7 +36,7 @@ namespace WebStore.Clients
 
         public async Task<string> GetAsync(int id)
         {
-            var response = await _Client.GetAsync( $"{_ServiceAddress}/{id}");
+            var response = await _Client.GetAsync($"{_ServiceAddress}/{id}");
 
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsAsync<string>();

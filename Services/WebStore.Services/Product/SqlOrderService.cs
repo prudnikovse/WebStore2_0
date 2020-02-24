@@ -4,10 +4,12 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebStore.DAL.Context;
+using WebStore.Domain.DTO.Orders;
 using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
+using WebStore.Services.Helpers;
 
 namespace WebStore.Infrastructure.Services
 {
@@ -22,17 +24,78 @@ namespace WebStore.Infrastructure.Services
             _UserManager = UserManager;
         }
 
-        public IEnumerable<Order> GetUserOrders(string UserName) => _db.Orders
+        public IEnumerable<OrderDTO> GetUserOrders(string UserName)
+        {
+            Mapper.CreateMap<Order, OrderDTO>();
+
+            var res = _db.Orders
            .Include(order => order.User)
            .Include(order => order.OrderItems)
            .Where(order => order.User.UserName == UserName)
+           .Select(it => Mapper.Map(it, new OrderDTO()
+           {
+               OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
+               {
+                   Id = oi.Id,
+                   Price = oi.Price,
+                   Quantity = oi.Quantity
+               }).ToList()
+           }))
            .ToArray();
+            //.Select(it => new OrderDTO()
+            //{
+            //    Id = it.Id,
+            //    Name = it.Name,
+            //    Address = it.Address,
+            //    Date = it.Date,
+            //    Phone = it.Phone,
+            //    OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
+            //    {
+            //        Id = oi.Id,
+            //        Price = oi.Price,
+            //        Quantity = oi.Quantity
+            //    }).ToList()
+            //})
 
-        public Order GetOrderById(int id) => _db.Orders
-           .Include(order => order.OrderItems)
-           .FirstOrDefault(order => order.Id == id);
+            return res;
+        }
 
-        public Order CreateOrder(OrderViewModel OrderModel, CartViewModel CartModel, string UserName)
+        public OrderDTO GetOrderById(int id)
+        {
+            var order = _db.Orders
+             .Include(o => o.OrderItems)
+             .FirstOrDefault(o => o.Id == id);
+
+            Mapper.CreateMap<Order, OrderDTO>();
+
+            return order == null ? null :
+                Mapper.Map(order, new OrderDTO()
+                {
+                    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+                    {
+                        Id = oi.Id,
+                        Price = oi.Price,
+                        Quantity = oi.Quantity
+                    }).ToList()
+                });
+
+            //new OrderDTO()
+            //{
+            //    Id = order.Id,
+            //    Name = order.Name,
+            //    Address = order.Address,
+            //    Date = order.Date,
+            //    Phone = order.Phone,
+            //    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+            //    {
+            //        Id = oi.Id,
+            //        Price = oi.Price,
+            //        Quantity = oi.Quantity
+            //    }).ToList()
+            //};
+        }
+
+        public OrderDTO CreateOrder(CreateOrderModel OrderModel, string UserName)
         {
             var user = _UserManager.FindByNameAsync(UserName).Result;
 
@@ -40,26 +103,26 @@ namespace WebStore.Infrastructure.Services
             {
                 var order = new Order
                 {
-                    Name = OrderModel.Name,
-                    Address = OrderModel.Address,
-                    Phone = OrderModel.Phone,
+                    Name = OrderModel.OrderViewModel.Name,
+                    Address = OrderModel.OrderViewModel.Address,
+                    Phone = OrderModel.OrderViewModel.Phone,
                     User = user,
                     Date = DateTime.Now
                 };
 
                 _db.Orders.Add(order);
 
-                foreach (var (product_model, quantity) in CartModel.Items)
+                foreach (var item in OrderModel.OrderItems)
                 {
-                    var product = _db.Products.FirstOrDefault(p => p.Id == product_model.Id);
+                    var product = _db.Products.FirstOrDefault(p => p.Id == item.Id);
                     if(product is null)
-                        throw new InvalidOperationException($"Товар с идентификатором id:{product_model.Id} отсутствует в БД");
+                        throw new InvalidOperationException($"Товар с идентификатором id:{item.Id} отсутствует в БД");
 
                     var order_item = new OrderItem
                     {
                         Order = order,
                         Price = product.Price,
-                        Quantity = quantity,
+                        Quantity = item.Quantity,
                         Product = product
                     };
 
@@ -68,7 +131,33 @@ namespace WebStore.Infrastructure.Services
 
                 _db.SaveChanges();
                 transaction.Commit();
-                return order;
+
+                Mapper.CreateMap<Order, OrderDTO>();
+
+                return Mapper.Map(order, new OrderDTO()
+                {
+                    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+                    {
+                        Id = oi.Id,
+                        Price = oi.Price,
+                        Quantity = oi.Quantity
+                    }).ToList()
+                });
+
+                //new OrderDTO()
+                //{
+                //    Id = order.Id,
+                //    Name = order.Name,
+                //    Address = order.Address,
+                //    Date = order.Date,
+                //    Phone = order.Phone,
+                //    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+                //    {
+                //        Id = oi.Id,
+                //        Price = oi.Price,
+                //        Quantity = oi.Quantity
+                //    }).ToList()
+                //};
             }
         }
     }

@@ -7,7 +7,7 @@ using WebStore.Domain.Consts;
 
 namespace WebStore.ServiceHosting.Controllers
 {
-    [Route(ControllerAddressConsts.ValuesController)]
+    [Route(WebApiConsts.Values)]
     [ApiController]
     public class ValuesController : ControllerBase
     {      
