@@ -9,6 +9,7 @@ using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
+using WebStore.Services.Helpers;
 
 namespace WebStore.Infrastructure.Services
 {
@@ -23,25 +24,41 @@ namespace WebStore.Infrastructure.Services
             _UserManager = UserManager;
         }
 
-        public IEnumerable<OrderDTO> GetUserOrders(string UserName) => _db.Orders
+        public IEnumerable<OrderDTO> GetUserOrders(string UserName)
+        {
+            Mapper.CreateMap<Order, OrderDTO>();
+
+            var res = _db.Orders
            .Include(order => order.User)
            .Include(order => order.OrderItems)
            .Where(order => order.User.UserName == UserName)
-           .Select(it => new OrderDTO()
+           .Select(it => Mapper.Map(it, new OrderDTO()
            {
-                Id = it.Id,
-                Name = it.Name,
-                Address = it.Address,
-                Date = it.Date,
-                Phone = it.Phone,
-                OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
-                {
-                    Id = oi.Id,
-                    Price = oi.Price,
-                    Quantity = oi.Quantity
-                }).ToList()
-           })
+               OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
+               {
+                   Id = oi.Id,
+                   Price = oi.Price,
+                   Quantity = oi.Quantity
+               }).ToList()
+           }))
            .ToArray();
+            //.Select(it => new OrderDTO()
+            //{
+            //    Id = it.Id,
+            //    Name = it.Name,
+            //    Address = it.Address,
+            //    Date = it.Date,
+            //    Phone = it.Phone,
+            //    OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
+            //    {
+            //        Id = oi.Id,
+            //        Price = oi.Price,
+            //        Quantity = oi.Quantity
+            //    }).ToList()
+            //})
+
+            return res;
+        }
 
         public OrderDTO GetOrderById(int id)
         {
@@ -49,20 +66,33 @@ namespace WebStore.Infrastructure.Services
              .Include(o => o.OrderItems)
              .FirstOrDefault(o => o.Id == id);
 
-            return order == null ? null : new OrderDTO()
-            {
-                Id = order.Id,
-                Name = order.Name,
-                Address = order.Address,
-                Date = order.Date,
-                Phone = order.Phone,
-                OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+            Mapper.CreateMap<Order, OrderDTO>();
+
+            return order == null ? null :
+                Mapper.Map(order, new OrderDTO()
                 {
-                    Id = oi.Id,
-                    Price = oi.Price,
-                    Quantity = oi.Quantity
-                }).ToList()
-            };
+                    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+                    {
+                        Id = oi.Id,
+                        Price = oi.Price,
+                        Quantity = oi.Quantity
+                    }).ToList()
+                });
+
+            //new OrderDTO()
+            //{
+            //    Id = order.Id,
+            //    Name = order.Name,
+            //    Address = order.Address,
+            //    Date = order.Date,
+            //    Phone = order.Phone,
+            //    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+            //    {
+            //        Id = oi.Id,
+            //        Price = oi.Price,
+            //        Quantity = oi.Quantity
+            //    }).ToList()
+            //};
         }
 
         public OrderDTO CreateOrder(CreateOrderModel OrderModel, string UserName)
@@ -101,20 +131,33 @@ namespace WebStore.Infrastructure.Services
 
                 _db.SaveChanges();
                 transaction.Commit();
-                return new OrderDTO()
+
+                Mapper.CreateMap<Order, OrderDTO>();
+
+                return Mapper.Map(order, new OrderDTO()
                 {
-                    Id = order.Id,
-                    Name = order.Name,
-                    Address = order.Address,
-                    Date = order.Date,
-                    Phone = order.Phone,
                     OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
                     {
                         Id = oi.Id,
                         Price = oi.Price,
                         Quantity = oi.Quantity
                     }).ToList()
-                }; ;
+                });
+
+                //new OrderDTO()
+                //{
+                //    Id = order.Id,
+                //    Name = order.Name,
+                //    Address = order.Address,
+                //    Date = order.Date,
+                //    Phone = order.Phone,
+                //    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
+                //    {
+                //        Id = oi.Id,
+                //        Price = oi.Price,
+                //        Quantity = oi.Quantity
+                //    }).ToList()
+                //};
             }
         }
     }

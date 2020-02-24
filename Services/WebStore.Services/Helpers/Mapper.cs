@@ -76,12 +76,14 @@ namespace WebStore.Services.Helpers
                     if (kvp.Value.MemberType.Equals(MemberTypes.Field))
                     {
                         var fi = (FieldInfo)kvp.Value;
-                        fi.SetValue(res, ConvertValue(sourceVal, fi.FieldType));
+                        if(ConvertValue(sourceVal, fi.FieldType, out object result))
+                            fi.SetValue(res, result);
                     }
                     else if (kvp.Value.MemberType.Equals(MemberTypes.Property))
                     {
                         var pi = (PropertyInfo)kvp.Value;
-                        pi.SetValue(res, ConvertValue(sourceVal, pi.PropertyType));
+                        if (ConvertValue(sourceVal, pi.PropertyType, out object result))
+                            pi.SetValue(res, result);
                     }
                 }
             }
@@ -104,55 +106,49 @@ namespace WebStore.Services.Helpers
                 CreateMap<TSource, TDestination>();
         }
 
-        public static object ConvertValue(object source, Type type)
+        public static bool ConvertValue(object source, Type type, out object result)
         {
-            object res = null;
+            var success = true;
+            result = null;
 
-            if (source != null && !source.GetType().Equals(type))
+            if (source != null) // && !source.GetType().Equals(type))
             {
                 if (type == typeof(string))
                 {
-                    return source.ToString();
+                    result = source.ToString();
                 }
                 if (type.Equals(typeof(Guid)) || type.Equals(typeof(Guid?)))
                 {
-                    Guid val;
-                    Guid.TryParse(source.ToString(), out val);
-                    return val;
+                    if(Guid.TryParse(source.ToString(), out Guid val));
+                        result = val;
                 }
                 if (type.Equals(typeof(DateTime)) || type.Equals(typeof(DateTime?)))
                 {
-                    DateTime val;
-                    if (DateTime.TryParse(source.ToString(), out val))
-                        return val;
+                    if (DateTime.TryParse(source.ToString(), out DateTime val))
+                        result = val;
                 }
                 // int, int?
                 if (type.Equals(typeof(int)) || type.Equals(typeof(int?)))
                 {
-                    int val;
-                    if (int.TryParse(source.ToString(), out val))
-                        return val;
+                    if (int.TryParse(source.ToString(), out int val))
+                        result = val;
                 }
                 // decimal, decimal?
                 if (type.Equals(typeof(decimal)) || type.Equals(typeof(decimal?)))
                 {
-                    decimal val;
-                    if (decimal.TryParse(source.ToString(), out val))
-                        return val;
+                    if (decimal.TryParse(source.ToString(), out decimal val))
+                        result = val;
                 }
                 if (type.Equals(typeof(bool)) || type.Equals(typeof(bool?)))
                 {
-                    bool val;
-                    if (bool.TryParse(source.ToString(), out val))
-                        return val;
-                    else
-                        return true; //Если не удалось сконвертить, т.к. source не пустой считаем что true (как в JS)
+                    if (bool.TryParse(source.ToString(), out bool val))
+                        return val;                   
                 }
-            }
-            else
-                return source;
 
-            return res;
+                success = result != null;
+            }
+
+            return success;
         }
 
         public class ConfigurationMap
