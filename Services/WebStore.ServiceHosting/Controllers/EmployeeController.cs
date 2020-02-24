@@ -12,11 +12,11 @@ namespace WebStore.ServiceHosting.Controllers
 {
     [Route(WebApiConsts.Employees)]
     [ApiController]
-    public class EmployeesController : ControllerBase, IEmployeesData
+    public class EmployeeController : ControllerBase, IEmployeesData
     {
         private readonly IEmployeesData _EmployeesData;
 
-        public EmployeesController(IEmployeesData employeesData) => _EmployeesData = employeesData;
+        public EmployeeController(IEmployeesData employeesData) => _EmployeesData = employeesData;
 
         [HttpPost, ActionName("Post")]
         public void Add([FromBody] EmployeeView Employee) => _EmployeesData.Add(Employee);

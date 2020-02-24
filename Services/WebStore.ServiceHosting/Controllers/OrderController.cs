@@ -5,43 +5,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Domain.Consts;
+using WebStore.Domain.DTO.Orders;
+using WebStore.Interfaces.Services;
 
 namespace WebStore.ServiceHosting.Controllers
 {
     [Route(WebApiConsts.Orders)]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrderController : ControllerBase, IOrderService
     {
-        // GET: api/Order
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        private readonly IOrderService _OrderService;
 
-        // GET: api/Order/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        public OrderController(IOrderService OrderService) => _OrderService = OrderService;
 
-        // POST: api/Order
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        [HttpGet("orders/{UserName}")]
+        public IEnumerable<OrderDTO> GetUserOrders(string UserName) => _OrderService.GetUserOrders(UserName);
 
-        // PUT: api/Order/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        [HttpGet("{id}"), ActionName("Get")]
+        public OrderDTO GetOrderById(int id) => _OrderService.GetOrderById(id);
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        [HttpPost("{UserName?}"), ActionName("Post")]
+        public OrderDTO CreateOrder(CreateOrderModel OrderModel, string UserName) => _OrderService.CreateOrder(OrderModel, UserName);
     }
 }

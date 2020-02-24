@@ -13,12 +13,12 @@ namespace WebStore.ServiceHosting.Controllers
 {
     [Route(WebApiConsts.Products)]
     [ApiController]
-    public class ProductsController : ControllerBase, IProductData
+    public class ProductController : ControllerBase, IProductData
     {
 
         private readonly IProductData _ProductData;
 
-        public ProductsController(IProductData ProductData) => _ProductData = ProductData;
+        public ProductController(IProductData ProductData) => _ProductData = ProductData;
 
         [HttpGet("sections")]
         public IEnumerable<Section> GetSections() => _ProductData.GetSections();

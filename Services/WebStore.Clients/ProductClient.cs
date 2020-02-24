@@ -11,9 +11,9 @@ using WebStore.Domain.DTO.Products;
 
 namespace WebStore.Clients
 {
-    public class ProductsClient : BaseClient, IProductData
+    public class ProductClient : BaseClient, IProductData
     {
-        public ProductsClient(IConfiguration config)
+        public ProductClient(IConfiguration config)
             : base(config, WebApiConsts.Products)
         {
         }

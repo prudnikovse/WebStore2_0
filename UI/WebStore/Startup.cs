@@ -27,11 +27,11 @@ namespace WebStore
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreContextInitializer>();
 
-            services.AddSingleton<IEmployeesData, EmployeesClient>();
-            services.AddScoped<IProductData, ProductsClient>();
+            services.AddSingleton<IEmployeesData, EmployeeClient>();
+            services.AddScoped<IProductData, ProductClient>();
             //services.AddScoped<IProductData, InMemoryProductData>();
             services.AddScoped<ICartService, CookieCartService>();
-            services.AddScoped<IOrderService, SqlOrderService>();
+            services.AddScoped<IOrderService, OrderClient>();
 
             services.AddScoped<IValuesService, ValuesClient>();
 

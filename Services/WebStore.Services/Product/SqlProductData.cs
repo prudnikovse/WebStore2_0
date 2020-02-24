@@ -35,11 +35,15 @@ namespace WebStore.Infrastructure.Services
             if (Filter?.SectionId != null)
                 query = query.Where(product => product.SectionId == Filter.SectionId);
 
-            Mapper.CreateMap<Product, ProductDTO>();
+            //Mapper.CreateMap<Product, ProductDTO>();
 
-            var res = query.AsEnumerable().FirstOrDefault(i => i.BrandId.HasValue);
+            //var res = query.AsEnumerable().FirstOrDefault(i => i.BrandId.HasValue);
 
-            var obj = Mapper.Map<Product, ProductDTO>(res);
+            //var obj = Mapper.Map<Product, ProductDTO>(res);
+
+            //return query
+            //    .Select(p => Mapper.Map<Product, ProductDTO>(p))
+            //    .AsEnumerable(); /*query.ToArray();*/
 
             return query
                 .Select(p => new ProductDTO()
@@ -61,27 +65,6 @@ namespace WebStore.Infrastructure.Services
                     }
                 })
                 .AsEnumerable(); /*query.ToArray();*/
-
-            //return query
-            //    .Select(p => new ProductDTO()
-            //    {
-            //        Id = p.Id,
-            //        Name = p.Name,
-            //        Order = p.Order,
-            //        Price = p.Price,
-            //        ImageUrl = p.ImageUrl,
-            //        Brand = p.Brand == null ? null : new BrandDTO()
-            //        {
-            //            Id = p.Brand.Id,
-            //            Name = p.Brand.Name
-            //        },
-            //        Section = p.Section == null ? null : new SectionDTO()
-            //        {
-            //            Id = p.Section.Id,
-            //            Name = p.Section.Name
-            //        }
-            //    })
-            //    .AsEnumerable(); /*query.ToArray();*/
         }
 
         public ProductDTO GetProductById(int id)

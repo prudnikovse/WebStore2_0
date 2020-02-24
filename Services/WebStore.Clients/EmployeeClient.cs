@@ -9,9 +9,9 @@ using System.Net.Http;
 
 namespace WebStore.Clients
 {
-    public class EmployeesClient : BaseClient, IEmployeesData
+    public class EmployeeClient : BaseClient, IEmployeesData
     {
-        public EmployeesClient(IConfiguration config)
+        public EmployeeClient(IConfiguration config)
             : base(config, WebApiConsts.Employees)
         {
         }
