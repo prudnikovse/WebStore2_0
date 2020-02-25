@@ -32,7 +32,6 @@ namespace WebStore.Clients
 
         public void SaveChanges()
         {
-            throw new NotImplementedException();
         }
     }
 }

@@ -81,7 +81,6 @@ namespace WebStore.Clients
             => PostAsync(url, source).Result;
 
         protected async Task<HttpResponseMessage> PostAsync<T>(string url, T source, CancellationToken token = default)
-            where T : new()
         {
             var response = await _Client.PostAsJsonAsync(url, source, token);
 
@@ -93,7 +92,6 @@ namespace WebStore.Clients
             => PutAsync(url, source).Result;
 
         protected async Task<HttpResponseMessage> PutAsync<T>(string url, T source, CancellationToken token = default)
-            where T : new()
         {
             var response = await _Client.PutAsJsonAsync(url, source, token);
 

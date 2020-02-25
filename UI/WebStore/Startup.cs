@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebStore.Clients;
+using WebStore.Clients.Identity;
 using WebStore.DAL.Context;
 using WebStore.Data;
 using WebStore.Domain.Entities.Identity;
@@ -23,9 +24,9 @@ namespace WebStore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<WebStoreContext>(opt => 
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<WebStoreContextInitializer>();
+            //services.AddDbContext<WebStoreContext>(opt => 
+            //    opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddTransient<WebStoreContextInitializer>();
 
             services.AddSingleton<IEmployeesData, EmployeeClient>();
             services.AddScoped<IProductData, ProductClient>();
@@ -36,8 +37,23 @@ namespace WebStore
             services.AddScoped<IValuesService, ValuesClient>();
 
             services.AddIdentity<User, Role>()
-               .AddEntityFrameworkStores<WebStoreContext>()
+               //.AddEntityFrameworkStores<WebStoreContext>()
                .AddDefaultTokenProviders();
+
+            #region Custom implementation identity storages
+
+            services.AddTransient<IUserStore<User>, UserClient>();
+            services.AddTransient<IUserPasswordStore<User>, UserClient>();
+            services.AddTransient<IUserEmailStore<User>, UserClient>();
+            services.AddTransient<IUserPhoneNumberStore<User>, UserClient>();
+            services.AddTransient<IUserTwoFactorStore<User>, UserClient>();
+            services.AddTransient<IUserLockoutStore<User>, UserClient>();
+            services.AddTransient<IUserClaimStore<User>, UserClient>();
+            services.AddTransient<IUserLoginStore<User>, UserClient>();
+
+            services.AddTransient<IRoleStore<Role>, RoleClient>();
+
+            #endregion
 
             services.Configure<IdentityOptions>(
                 opt =>
@@ -75,9 +91,9 @@ namespace WebStore
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, WebStoreContextInitializer db)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env /*, WebStoreContextInitializer db */)
         {
-            db.InitializeAsync().Wait();
+            //db.InitializeAsync().Wait();
 
             if (env.IsDevelopment())
             {
