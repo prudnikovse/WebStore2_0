@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +18,7 @@ using WebStore.DAL.Data;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.Services;
 using WebStore.Interfaces.Services;
+using WebStore.Services.AutoMapper;
 
 namespace WebStore.ServiceHosting
 {
@@ -32,6 +34,14 @@ namespace WebStore.ServiceHosting
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAutoMapper(opt =>
+            {
+                opt.AddProfile<DTOModelMapping>();
+                opt.AddProfile<ViewModelMapping>();
+            }, typeof(Startup)/*.Assembly*/);
+
+
             services.AddDbContext<WebStoreContext>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreContextInitializer>();

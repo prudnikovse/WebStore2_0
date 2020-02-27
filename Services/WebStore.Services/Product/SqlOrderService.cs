@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebStore.DAL.Context;
@@ -9,7 +10,7 @@ using WebStore.Domain.Entities;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
-using WebStore.Services.Helpers;
+//using WebStore.Services.Helpers;
 
 namespace WebStore.Infrastructure.Services
 {
@@ -17,45 +18,23 @@ namespace WebStore.Infrastructure.Services
     {
         private readonly WebStoreContext _db;
         private readonly UserManager<User> _UserManager;
+        private readonly IMapper _Mapper;
 
-        public SqlOrderService(WebStoreContext db, UserManager<User> UserManager)
+        public SqlOrderService(WebStoreContext db, UserManager<User> UserManager, IMapper Mapper)
         {
             _db = db;
             _UserManager = UserManager;
+            _Mapper = Mapper;
         }
 
         public IEnumerable<OrderDTO> GetUserOrders(string UserName)
         {
-            Mapper.CreateMap<Order, OrderDTO>();
-
             var res = _db.Orders
            .Include(order => order.User)
            .Include(order => order.OrderItems)
            .Where(order => order.User.UserName == UserName)
-           .Select(it => Mapper.Map(it, new OrderDTO()
-           {
-               OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
-               {
-                   Id = oi.Id,
-                   Price = oi.Price,
-                   Quantity = oi.Quantity
-               }).ToList()
-           }))
+           .Select(_Mapper.Map<OrderDTO>)
            .ToArray();
-            //.Select(it => new OrderDTO()
-            //{
-            //    Id = it.Id,
-            //    Name = it.Name,
-            //    Address = it.Address,
-            //    Date = it.Date,
-            //    Phone = it.Phone,
-            //    OrderItems = it.OrderItems.Select(oi => new OrderItemDTO()
-            //    {
-            //        Id = oi.Id,
-            //        Price = oi.Price,
-            //        Quantity = oi.Quantity
-            //    }).ToList()
-            //})
 
             return res;
         }
@@ -66,33 +45,7 @@ namespace WebStore.Infrastructure.Services
              .Include(o => o.OrderItems)
              .FirstOrDefault(o => o.Id == id);
 
-            Mapper.CreateMap<Order, OrderDTO>();
-
-            return order == null ? null :
-                Mapper.Map(order, new OrderDTO()
-                {
-                    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
-                    {
-                        Id = oi.Id,
-                        Price = oi.Price,
-                        Quantity = oi.Quantity
-                    }).ToList()
-                });
-
-            //new OrderDTO()
-            //{
-            //    Id = order.Id,
-            //    Name = order.Name,
-            //    Address = order.Address,
-            //    Date = order.Date,
-            //    Phone = order.Phone,
-            //    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
-            //    {
-            //        Id = oi.Id,
-            //        Price = oi.Price,
-            //        Quantity = oi.Quantity
-            //    }).ToList()
-            //};
+            return order == null ? null : _Mapper.Map<OrderDTO>(order);
         }
 
         public OrderDTO CreateOrder(CreateOrderModel OrderModel, string UserName)
@@ -101,14 +54,16 @@ namespace WebStore.Infrastructure.Services
 
             using (var transaction = _db.Database.BeginTransaction())
             {
-                var order = new Order
-                {
-                    Name = OrderModel.OrderViewModel.Name,
-                    Address = OrderModel.OrderViewModel.Address,
-                    Phone = OrderModel.OrderViewModel.Phone,
-                    User = user,
-                    Date = DateTime.Now
-                };
+                //var order = new Order
+                //{
+                //    Name = OrderModel.OrderViewModel.Name,
+                //    Address = OrderModel.OrderViewModel.Address,
+                //    Phone = OrderModel.OrderViewModel.Phone,
+                //    User = user,
+                //    Date = DateTime.Now
+                //};
+
+                var order = _Mapper.Map<Order>(OrderModel.OrderViewModel);
 
                 _db.Orders.Add(order);
 
@@ -132,32 +87,17 @@ namespace WebStore.Infrastructure.Services
                 _db.SaveChanges();
                 transaction.Commit();
 
-                Mapper.CreateMap<Order, OrderDTO>();
+                return _Mapper.Map<OrderDTO>(order);
 
-                return Mapper.Map(order, new OrderDTO()
-                {
-                    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
-                    {
-                        Id = oi.Id,
-                        Price = oi.Price,
-                        Quantity = oi.Quantity
-                    }).ToList()
-                });
-
-                //new OrderDTO()
+                //return WebStore.Services.Helpers.Mapper.Map(order, new OrderDTO()
                 //{
-                //    Id = order.Id,
-                //    Name = order.Name,
-                //    Address = order.Address,
-                //    Date = order.Date,
-                //    Phone = order.Phone,
                 //    OrderItems = order.OrderItems.Select(oi => new OrderItemDTO()
                 //    {
                 //        Id = oi.Id,
                 //        Price = oi.Price,
                 //        Quantity = oi.Quantity
                 //    }).ToList()
-                //};
+                //});
             }
         }
     }
