@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -35,15 +36,17 @@ namespace WebStore.Controllers
         public IActionResult Register() => View(new RegisterUserViewModel());
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterUserViewModel Model)
+        public async Task<IActionResult> Register(RegisterUserViewModel Model, [FromServices] IMapper Mapper)
         {
             if (!ModelState.IsValid)
                 return View(Model);
 
-            var user = new User
-            {
-                UserName = Model.UserName
-            };
+            //var user = new User
+            //{
+            //    UserName = Model.UserName
+            //};
+
+            var user = Mapper.Map<User>(Model);
 
             _Logger.LogInformation("Регистрация нового пользователя {0}", Model.UserName);
 

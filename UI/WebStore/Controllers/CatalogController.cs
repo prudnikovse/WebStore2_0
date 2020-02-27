@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using WebStore.Domain.Entities;
 using WebStore.Domain.ViewModels;
@@ -14,7 +15,7 @@ namespace WebStore.Controllers
         private readonly IProductData _ProductData;
         public CatalogController(IProductData ProductData) => _ProductData = ProductData;
 
-        public IActionResult Shop(int? SectionId, int? BrandId)
+        public IActionResult Shop(int? SectionId, int? BrandId, [FromServices] IMapper Mapper)
         {
             var products = _ProductData.GetProducts(new ProductFilter
             {
@@ -26,14 +27,8 @@ namespace WebStore.Controllers
             {
                 SectionId = SectionId,
                 BrandId = BrandId,
-                Products = products.Select(p => new ProductViewModel
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Order = p.Order,
-                    Price = p.Price,
-                    ImageUrl = p.ImageUrl
-                }).OrderBy(p => p.Order)
+                Products = products.Select(Mapper.Map<ProductViewModel>)
+                    .OrderBy(p => p.Order)
             });
         }
 
