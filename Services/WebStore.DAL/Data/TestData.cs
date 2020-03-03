@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebStore.Domain.Entities;
 
-namespace WebStore.Data
+namespace WebStore.DAL.Data
 {
     public static class TestData
     {

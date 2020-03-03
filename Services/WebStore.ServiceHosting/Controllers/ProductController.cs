@@ -20,31 +20,26 @@ namespace WebStore.ServiceHosting.Controllers
 
         public ProductController(IProductData ProductData) => _ProductData = ProductData;
 
+        /// <summary>Получение всех разделов каталога товаров</summary>
+        /// <returns>Перечисление всех разделов каталога</returns>
         [HttpGet("sections")]
         public IEnumerable<Section> GetSections() => _ProductData.GetSections();
 
+        /// <summary>Получение всех брендов товаров из каталога</summary>
+        /// <returns>Перечисление брендов товаров каталога</returns>
         [HttpGet("brands")]
         public IEnumerable<Brand> GetBrands() => _ProductData.GetBrands();
 
+        /// <summary>Получение товаров, удовлетворяющих критерию поиска</summary>
+        /// <param name="Filter">Фильтр - критерий поиска товаров в каталоге</param>
+        /// <returns>Перечисление всех товаров из каталога, удовлетворяющих критерию поиска</returns>
         [HttpPost, ActionName("Post")]
         public IEnumerable<ProductDTO> GetProducts([FromBody] ProductFilter Filter = null) => _ProductData.GetProducts(Filter);
 
+        /// <summary>Получение информации по товару, заданному идентификатором</summary>
+        /// <param name="id">Идентификатор товара, информацию по которому требуется получить</param>
+        /// <returns>Информацию по товару, заданному идентификатором</returns>
         [HttpGet("{id}"), ActionName("Get")]
-        public ProductDTO GetProductById(int id) => _ProductData.GetProductById(id);
-
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}     
+        public ProductDTO GetProductById(int id) => _ProductData.GetProductById(id);    
     }
 }

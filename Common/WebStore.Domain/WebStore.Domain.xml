@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebStore.Domain</name>
+    </assembly>
+    <members>
+        <member name="T:WebStore.Domain.DTO.Products.ProductDTO">
+            <summary>Информация о товаре</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.Id">
+            <summary>Идентификатор товара в каталоге</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.Name">
+            <summary>Название товара</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.Order">
+            <summary>Порядковый номер для сортировки</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.Price">
+            <summary>Цена</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.ImageUrl">
+            <summary>Адрес изображения</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.Brand">
+            <summary>Сведения о бренде</summary>
+        </member>
+        <member name="P:WebStore.Domain.DTO.Products.ProductDTO.Section">
+            <summary>Сведения о секции товара в каталоге</summary>
+        </member>
+        <member name="T:WebStore.Domain.Entities.Base.BaseEntity">
+            <summary>Сущность</summary>
+        </member>
+        <member name="T:WebStore.Domain.Entities.Base.Interfaces.IBaseEntity">
+            <summary>Сущность</summary>
+        </member>
+        <member name="P:WebStore.Domain.Entities.Base.Interfaces.IBaseEntity.Id">
+            <summary>Идентификатор</summary>
+        </member>
+        <member name="T:WebStore.Domain.Entities.Base.Interfaces.INamedEntity">
+            <summary>Именованная сущность</summary>
+        </member>
+        <member name="P:WebStore.Domain.Entities.Base.Interfaces.INamedEntity.Name">
+            <summary>Имя</summary>
+        </member>
+        <member name="T:WebStore.Domain.Entities.Base.Interfaces.IOrderedEntity">
+            <summary>Упорядочиваемая сущность</summary>
+        </member>
+        <member name="P:WebStore.Domain.Entities.Base.Interfaces.IOrderedEntity.Order">
+            <summary>Порядковый номер</summary>
+        </member>
+        <member name="T:WebStore.Domain.Entities.Base.NamedEntity">
+            <summary>Именованная сущность</summary>
+        </member>
+        <member name="T:WebStore.Domain.ViewModels.DetailsViewModel">
+            <summary>
+            Полная модель-представления для представления корзины,
+            где есть область корзины и область оформления заказа
+            </summary>
+        </member>
+        <member name="T:WebStore.Domain.ViewModels.EmployeeView">
+            <summary>Модель-представления сотрудника</summary>
+        </member>
+        <member name="T:WebStore.Domain.ViewModels.OrderViewModel">
+            <summary>Модель-представления заказа</summary>
+        </member>
+    </members>
+</doc>

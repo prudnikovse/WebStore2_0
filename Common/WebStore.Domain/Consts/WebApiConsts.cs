@@ -13,5 +13,12 @@ namespace WebStore.Domain.Consts
         public const string Products = "api/products";
 
         public const string Employees = "api/employees";
+
+        public class Identity
+        {
+            public const string Users = "api/users";
+
+            public const string Roles = "api/roles";
+        }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WebStore.DAL.Context;
 using WebStore.Domain.Entities.Identity;
 
-namespace WebStore.Data
+namespace WebStore.DAL.Data
 {
     public class WebStoreContextInitializer
     {
