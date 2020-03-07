@@ -1,0 +1,21 @@
+name: Unit testing
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test on .Net Core
+    runs-on: [windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use .Net 3.1.102
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.102
+
+    - name: Build with dotnet
+      run: dotnet build
+      
+    - name: Run tests
+      run: dotnet test 
