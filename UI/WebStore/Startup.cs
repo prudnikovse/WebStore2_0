@@ -5,13 +5,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WebStore.Clients;
 using WebStore.Clients.Identity;
 using WebStore.Domain.Entities.Identity;
 using WebStore.Infrastructure.AutoMapper;
+using WebStore.Infrastructure.Middleware;
 using WebStore.Infrastructure.Services;
 using WebStore.Interfaces.Api;
 using WebStore.Interfaces.Services;
+using WebStore.Logger;
 
 namespace WebStore
 {
@@ -95,9 +98,11 @@ namespace WebStore
             services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env /*, WebStoreContextInitializer db */)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory log /*, WebStoreContextInitializer db */)
         {
             //db.InitializeAsync().Wait();
+
+            log.AddLog4Net();
 
             if (env.IsDevelopment())
             {
@@ -112,6 +117,7 @@ namespace WebStore
             app.UseAuthentication();
 
             //app.UseSession();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseMvc(routes =>
             {
