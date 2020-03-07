@@ -16,10 +16,10 @@ using Microsoft.Extensions.Options;
 using WebStore.DAL.Context;
 using WebStore.DAL.Data;
 using WebStore.Domain.Entities.Identity;
-using WebStore.Infrastructure.Services;
 using WebStore.Interfaces.Services;
 using WebStore.Services.AutoMapper;
 using WebStore.Logger;
+using WebStore.Services;
 
 namespace WebStore.ServiceHosting
 {
@@ -62,7 +62,7 @@ namespace WebStore.ServiceHosting
             services.AddScoped<IOrderService, SqlOrderService>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<ICartService, CookieCartService>();
+            services.AddScoped<ICartService, CartService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
