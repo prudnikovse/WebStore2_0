@@ -4,7 +4,7 @@ using System.Linq;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
 
-namespace WebStore.Infrastructure.Services
+namespace WebStore.Services
 {
     public class InMemoryEmployeesData : IEmployeesData
     {

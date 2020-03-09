@@ -9,7 +9,7 @@ using WebStore.Domain.DTO.Products;
 using WebStore.Domain.Entities;
 using WebStore.Interfaces.Services;
 
-namespace WebStore.Infrastructure.Services
+namespace WebStore.Services
 {
     public class SqlProductData : IProductData
     {
