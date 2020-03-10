@@ -40,6 +40,16 @@ namespace WebStore.ServiceHosting.Controllers
         /// <param name="id">Идентификатор товара, информацию по которому требуется получить</param>
         /// <returns>Информацию по товару, заданному идентификатором</returns>
         [HttpGet("{id}"), ActionName("Get")]
-        public ProductDTO GetProductById(int id) => _ProductData.GetProductById(id);    
+        public ProductDTO GetProductById(int id) => _ProductData.GetProductById(id);
+
+        /// <summary>Получение раздела каталога товаров по его id</summary>
+        /// <returns>Раздел каталога</returns>
+        [HttpGet("sections/{id}")]
+        public SectionDTO GetSectionById(int id) => _ProductData.GetSectionById(id);
+
+        /// <summary>Получение бренда товара из каталога по id</summary>
+        /// <returns>Бренд товаров каталога</returns>
+        [HttpGet("brands/{id}")]
+        public BrandDTO GetBrandById(int id) => _ProductData.GetBrandById(id);
     }
 }

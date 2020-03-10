@@ -54,5 +54,9 @@ namespace WebStore.Services
 
             return product == null ? null : _Mapper.Map<ProductDTO>(product);       
         }
+
+        public SectionDTO GetSectionById(int id) => _Mapper.Map<SectionDTO>(_db.Sections.Find(id));
+
+        public BrandDTO GetBrandById(int id) => _Mapper.Map<BrandDTO>(_db.Brands.Find(id));
     }
 }

@@ -22,5 +22,13 @@
             <param name="id">Идентификатор товара, информацию по которому требуется получить</param>
             <returns>Информацию по товару, заданному идентификатором</returns>
         </member>
+        <member name="M:WebStore.ServiceHosting.Controllers.ProductController.GetSectionById(System.Int32)">
+            <summary>Получение раздела каталога товаров по его id</summary>
+            <returns>Раздел каталога</returns>
+        </member>
+        <member name="M:WebStore.ServiceHosting.Controllers.ProductController.GetBrandById(System.Int32)">
+            <summary>Получение бренда товара из каталога по id</summary>
+            <returns>Бренд товаров каталога</returns>
+        </member>
     </members>
 </doc>
