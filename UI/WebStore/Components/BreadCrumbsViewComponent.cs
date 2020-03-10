@@ -82,8 +82,8 @@ namespace WebStore.Components
                             BreadCrumbsType = fromType,
                             Id = (fromType == BreadCrumbsType.Section) ? product?.Section?.Id.ToString()
                                 : product?.Brand?.Id.ToString(),
-                            Name = (fromType == BreadCrumbsType.Section) ? _ProductData.GetSectionById(id)?.Name
-                                : _ProductData.GetBrandById(id)?.Name
+                            Name = (fromType == BreadCrumbsType.Section) ? _ProductData.GetSectionById(product?.Section?.Id ?? -1)?.Name
+                                : _ProductData.GetBrandById(product?.Brand?.Id ?? -1)?.Name
                         },
                         new BreadCrumbsViewModel
                         {

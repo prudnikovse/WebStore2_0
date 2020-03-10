@@ -22,13 +22,19 @@ namespace WebStore.Services
             _Mapper = Mapper;
         }
 
-        public IEnumerable<Section> GetSections() => _db.Sections
+        public IEnumerable<SectionDTO> GetSections() => _db.Sections
            //.Include(section => section.Products)
-           .AsEnumerable();
+           .AsEnumerable()
+           .Select(_Mapper.Map<SectionDTO>);
 
-        public IEnumerable<Brand> GetBrands() => _db.Brands
+        public IEnumerable<BrandDTO> GetBrands() => _db.Brands
            //.Include(brand => brand.Products)
-           .AsEnumerable();
+            .AsEnumerable()
+            .Select(brand => { 
+               var brandDto = _Mapper.Map<BrandDTO>(brand);
+                brandDto.ProductCount = _db.Products.Where(pr => pr.BrandId == brand.Id).Count();
+               return brandDto;
+           });
 
         public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
         {
@@ -39,6 +45,9 @@ namespace WebStore.Services
 
             if (Filter?.SectionId != null)
                 query = query.Where(product => product.SectionId == Filter.SectionId);
+
+            if (Filter?.Ids?.Count > 0)
+                query = query.Where(product => Filter.Ids.Contains(product.Id));
 
             return query
                 .Select(_Mapper.Map<ProductDTO>)

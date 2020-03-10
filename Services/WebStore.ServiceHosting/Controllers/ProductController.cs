@@ -23,12 +23,12 @@ namespace WebStore.ServiceHosting.Controllers
         /// <summary>Получение всех разделов каталога товаров</summary>
         /// <returns>Перечисление всех разделов каталога</returns>
         [HttpGet("sections")]
-        public IEnumerable<Section> GetSections() => _ProductData.GetSections();
+        public IEnumerable<SectionDTO> GetSections() => _ProductData.GetSections();
 
         /// <summary>Получение всех брендов товаров из каталога</summary>
         /// <returns>Перечисление брендов товаров каталога</returns>
         [HttpGet("brands")]
-        public IEnumerable<Brand> GetBrands() => _ProductData.GetBrands();
+        public IEnumerable<BrandDTO> GetBrands() => _ProductData.GetBrands();
 
         /// <summary>Получение товаров, удовлетворяющих критерию поиска</summary>
         /// <param name="Filter">Фильтр - критерий поиска товаров в каталоге</param>

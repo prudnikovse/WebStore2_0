@@ -18,6 +18,8 @@ namespace WebStore.Infrastructure.AutoMapper
 
             CreateMap<ProductDTO, ProductViewModel>()
                 .ReverseMap();
+
+            CreateMap<BrandDTO, BrandViewModel>();
         }
     }
 }
