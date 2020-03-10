@@ -23,7 +23,7 @@ namespace WebStore.Components
                 ? BreadCrumbsType.Brand
                 : BreadCrumbsType.None;
 
-            if((string)ViewContext.RouteData.Values["action"] == nameof(CatalogController))
+            if((string)ViewContext.RouteData.Values["action"] == nameof(CatalogController.Details))
             {
                 type = BreadCrumbsType.Product;
             }

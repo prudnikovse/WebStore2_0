@@ -27,7 +27,7 @@ namespace WebStore.Clients
 
         public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
         {
-            var res = Post(_ServiceAddress, Filter);
+            var res = Post(_ServiceAddress, Filter ?? new ProductFilter());
 
             if (res.IsSuccessStatusCode)
                 return res.Content.ReadAsAsync<List<ProductDTO>>().Result;
