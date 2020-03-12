@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -49,7 +50,9 @@ namespace WebStore.Tests.Controllers
                     }
                 });
 
-            var controller = new CatalogController(productDataMock.Object);
+            var configMock = new Mock<IConfiguration>();
+
+            var controller = new CatalogController(productDataMock.Object, configMock.Object);
 
             var result = controller.Details(expectedProductId);
 
@@ -69,11 +72,13 @@ namespace WebStore.Tests.Controllers
 
             var productDataMock = new Mock<IProductData>();
 
+            var configMock = new Mock<IConfiguration>();
+
             productDataMock
                 .Setup(p => p.GetProductById(It.IsAny<int>()))
                 .Returns(default(ProductDTO));
 
-            var controller = new CatalogController(productDataMock.Object);
+            var controller = new CatalogController(productDataMock.Object, configMock.Object);
 
             var result = controller.Details(expectedProductId);
 
@@ -85,46 +90,52 @@ namespace WebStore.Tests.Controllers
         {
             var productDataMock = new Mock<IProductData>();
 
+            var configMock = new Mock<IConfiguration>();
+
             productDataMock
                 .Setup(p => p.GetProducts(It.IsAny<ProductFilter>()))
-                .Returns<ProductFilter>(filter => new[]
+                .Returns<ProductFilter>(filter => new PageProductsDTO
                 {
-                    new ProductDTO
+                    Products = new List<ProductDTO>
                     {
-                        Id = 1,
-                        Name = "Product 1",
-                        ImageUrl = "Product1.png",
-                        Order = 0,
-                        Price = 10m,
-                        Brand = new BrandDTO
+                        new ProductDTO
                         {
                             Id = 1,
-                            Name = $"Brand of product 1"
+                            Name = "Product 1",
+                            ImageUrl = "Product1.png",
+                            Order = 0,
+                            Price = 10m,
+                            Brand = new BrandDTO
+                            {
+                                Id = 1,
+                                Name = $"Brand of product 1"
+                            },
+                            Section = new SectionDTO
+                            {
+                                Id = 1,
+                                Name = $"Section of product 1"
+                            }
                         },
-                        Section = new SectionDTO
+                        new ProductDTO
                         {
-                            Id = 1,
-                            Name = $"Section of product 1"
+                            Id = 2,
+                            Name = "Product 2",
+                            ImageUrl = "Product2.png",
+                            Order = 0,
+                            Price = 20m,
+                            Brand = new BrandDTO
+                            {
+                                Id = 2,
+                                Name = $"Brand of product 2"
+                            },
+                            Section = new SectionDTO
+                            {
+                                Id = 2,
+                                Name = $"Section of product 2"
+                            }
                         }
                     },
-                    new ProductDTO
-                    {
-                        Id = 2,
-                        Name = "Product 2",
-                        ImageUrl = "Product2.png",
-                        Order = 0,
-                        Price = 20m,
-                        Brand = new BrandDTO
-                        {
-                            Id = 2,
-                            Name = $"Brand of product 2"
-                        },
-                        Section = new SectionDTO
-                        {
-                            Id = 2,
-                            Name = $"Section of product 2"
-                        }
-                    }
+                    TotalCount = 2
                 });
 
             var mapperMock = new Mock<IMapper>();
@@ -139,7 +150,7 @@ namespace WebStore.Tests.Controllers
                     Brand = p.Brand.Name
                 });
 
-            var controller = new CatalogController(productDataMock.Object);
+            var controller = new CatalogController(productDataMock.Object, configMock.Object);
 
             var expectedSectionId = 1;
             var expectedBrandId = 5;

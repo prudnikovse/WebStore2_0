@@ -26,7 +26,7 @@ namespace WebStore.Controllers
             nodes.AddRange(ProductData.GetBrands().Select(brand => new SitemapNode(Url.Action("Shop", "Catalog",
                 new { SectionId = brand.Id }))));
 
-            nodes.AddRange(ProductData.GetProducts().Select(product => new SitemapNode(Url.Action("Details", "Catalog",
+            nodes.AddRange(ProductData.GetProducts().Products.Select(product => new SitemapNode(Url.Action("Details", "Catalog",
                 new { SectionId = product.Id }))));
 
             return new SitemapProvider().CreateSitemap(new SitemapModel(nodes));

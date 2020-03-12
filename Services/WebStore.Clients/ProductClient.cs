@@ -25,14 +25,14 @@ namespace WebStore.Clients
         public ProductDTO GetProductById(int id) => Get<ProductDTO>($"{_ServiceAddress}/{id}");
 
 
-        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
+        public PageProductsDTO GetProducts(ProductFilter Filter = null)
         {
             var res = Post(_ServiceAddress, Filter ?? new ProductFilter());
 
             if (res.IsSuccessStatusCode)
-                return res.Content.ReadAsAsync<List<ProductDTO>>().Result;
+                return res.Content.ReadAsAsync<PageProductsDTO>().Result;
 
-            return Array.Empty<ProductDTO>();
+            return new PageProductsDTO();
         }
 
         public SectionDTO GetSectionById(int id) => Get<SectionDTO>($"{_ServiceAddress}/sections/{id}");

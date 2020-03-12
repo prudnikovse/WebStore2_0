@@ -208,48 +208,51 @@ namespace WebStore.Services.Tests
                     }
             };
 
-            var products = new List<ProductDTO>
+            var products = new PageProductsDTO
             {
-                { 
-                    new ProductDTO 
-                    { 
-                        Id = 1,
-                        Name = "Product 1",
-                        ImageUrl = "Product1.png",
-                        Order = 0,
-                        Price = 1.1m,
-                        Brand = new BrandDTO
-                        {
-                            Id = 1,
-                            Name = "Brand of product 1"
-                        },
-                        Section = new SectionDTO
-                        {
-                            Id = 1,
-                            Name = "Section of product 1"
-                        }
-                    } 
-                },
-                {
-                    new ProductDTO
+                Products = new List<ProductDTO> {
                     {
-                        Id = 2,
-                        Name = "Product 2",
-                        ImageUrl = "Product2.png",
-                        Order = 0,
-                        Price = 2.2m,
-                        Brand = new BrandDTO
+                        new ProductDTO
+                        {
+                            Id = 1,
+                            Name = "Product 1",
+                            ImageUrl = "Product1.png",
+                            Order = 0,
+                            Price = 1.1m,
+                            Brand = new BrandDTO
+                            {
+                                Id = 1,
+                                Name = "Brand of product 1"
+                            },
+                            Section = new SectionDTO
+                            {
+                                Id = 1,
+                                Name = "Section of product 1"
+                            }
+                        }
+                    },
+                    {
+                        new ProductDTO
                         {
                             Id = 2,
-                            Name = "Brand of product 2"
-                        },
-                        Section = new SectionDTO
-                        {
-                            Id = 2,
-                            Name = "Section of product 2"
+                            Name = "Product 2",
+                            ImageUrl = "Product2.png",
+                            Order = 0,
+                            Price = 2.2m,
+                            Brand = new BrandDTO
+                            {
+                                Id = 2,
+                                Name = "Brand of product 2"
+                            },
+                            Section = new SectionDTO
+                            {
+                                Id = 2,
+                                Name = "Section of product 2"
+                            }
                         }
                     }
-                }
+                },
+                TotalCount = 2
             };
 
             var productDataMock = new Mock<IProductData>();

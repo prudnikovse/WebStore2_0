@@ -36,7 +36,7 @@ namespace WebStore.Services
                return brandDto;
            });
 
-        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
+        public PageProductsDTO GetProducts(ProductFilter Filter = null)
         {
             IQueryable<Product> query = _db.Products;
 
@@ -49,10 +49,18 @@ namespace WebStore.Services
             if (Filter?.Ids?.Count > 0)
                 query = query.Where(product => Filter.Ids.Contains(product.Id));
 
-            return query
-                .Select(_Mapper.Map<ProductDTO>)
-                .AsEnumerable();    
-        }
+            if (Filter.PageSize.HasValue)
+                query = query.Skip((Filter.Page - 1) * Filter.PageSize.Value)
+                    .Take(Filter.PageSize.Value);
+
+            var totalCount = query.Count();
+
+            return new PageProductsDTO
+            {
+                Products = query.Select(_Mapper.Map<ProductDTO>).AsEnumerable(),
+                TotalCount = totalCount
+            };
+        }                 
 
         public ProductDTO GetProductById(int id)
         {
