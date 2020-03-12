@@ -49,12 +49,12 @@ namespace WebStore.Services
             if (Filter?.Ids?.Count > 0)
                 query = query.Where(product => Filter.Ids.Contains(product.Id));
 
+            var totalCount = query.Count();
+
             if (Filter.PageSize.HasValue)
                 query = query.Skip((Filter.Page - 1) * Filter.PageSize.Value)
                     .Take(Filter.PageSize.Value);
-
-            var totalCount = query.Count();
-
+          
             return new PageProductsDTO
             {
                 Products = query.Select(_Mapper.Map<ProductDTO>).AsEnumerable(),
