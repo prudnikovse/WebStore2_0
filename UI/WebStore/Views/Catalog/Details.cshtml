@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = $"Товар {Model.Name}";
 }
+    <vc:bread-crumbs />
 
     <section>
         <div class="container">
@@ -61,7 +62,9 @@
                                     <span>@Model.Price.ToString("C")</span>
                                     <label>Количество:</label>
                                     <input type="text" value="3" />
-                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id" class="btn btn-default cart">
+                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id"
+                                       data-id="@Model.Id"
+                                       class="btn btn-default cart add-to-cart">
                                         <i class="fa fa-shopping-cart"></i>
                                         Добавить в корзину
                                     </a>

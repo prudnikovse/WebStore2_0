@@ -18,21 +18,25 @@ namespace WebStore.Clients
         {
         }
 
-        public IEnumerable<Brand> GetBrands() => Get<List<Brand>>($"{_ServiceAddress}/brands");
+        public BrandDTO GetBrandById(int id) => Get<BrandDTO>($"{_ServiceAddress}/brands/{id}");
+
+        public IEnumerable<BrandDTO> GetBrands() => Get<List<BrandDTO>>($"{_ServiceAddress}/brands");
     
         public ProductDTO GetProductById(int id) => Get<ProductDTO>($"{_ServiceAddress}/{id}");
 
 
-        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
+        public PageProductsDTO GetProducts(ProductFilter Filter = null)
         {
-            var res = Post(_ServiceAddress, Filter);
+            var res = Post(_ServiceAddress, Filter ?? new ProductFilter());
 
             if (res.IsSuccessStatusCode)
-                return res.Content.ReadAsAsync<List<ProductDTO>>().Result;
+                return res.Content.ReadAsAsync<PageProductsDTO>().Result;
 
-            return Array.Empty<ProductDTO>();
+            return new PageProductsDTO();
         }
 
-        public IEnumerable<Section> GetSections() => Get<List<Section>>($"{_ServiceAddress}/sections");
+        public SectionDTO GetSectionById(int id) => Get<SectionDTO>($"{_ServiceAddress}/sections/{id}");
+
+        public IEnumerable<SectionDTO> GetSections() => Get<List<SectionDTO>>($"{_ServiceAddress}/sections");
     }
 }

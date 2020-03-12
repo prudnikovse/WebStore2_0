@@ -22,15 +22,21 @@ namespace WebStore.Services
             _Mapper = Mapper;
         }
 
-        public IEnumerable<Section> GetSections() => _db.Sections
+        public IEnumerable<SectionDTO> GetSections() => _db.Sections
            //.Include(section => section.Products)
-           .AsEnumerable();
+           .AsEnumerable()
+           .Select(_Mapper.Map<SectionDTO>);
 
-        public IEnumerable<Brand> GetBrands() => _db.Brands
+        public IEnumerable<BrandDTO> GetBrands() => _db.Brands
            //.Include(brand => brand.Products)
-           .AsEnumerable();
+            .AsEnumerable()
+            .Select(brand => { 
+               var brandDto = _Mapper.Map<BrandDTO>(brand);
+                brandDto.ProductCount = _db.Products.Where(pr => pr.BrandId == brand.Id).Count();
+               return brandDto;
+           });
 
-        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
+        public PageProductsDTO GetProducts(ProductFilter Filter = null)
         {
             IQueryable<Product> query = _db.Products;
 
@@ -40,10 +46,21 @@ namespace WebStore.Services
             if (Filter?.SectionId != null)
                 query = query.Where(product => product.SectionId == Filter.SectionId);
 
-            return query
-                .Select(_Mapper.Map<ProductDTO>)
-                .AsEnumerable();    
-        }
+            if (Filter?.Ids?.Count > 0)
+                query = query.Where(product => Filter.Ids.Contains(product.Id));
+
+            var totalCount = query.Count();
+
+            if (Filter.PageSize.HasValue)
+                query = query.Skip((Filter.Page - 1) * Filter.PageSize.Value)
+                    .Take(Filter.PageSize.Value);
+          
+            return new PageProductsDTO
+            {
+                Products = query.Select(_Mapper.Map<ProductDTO>).AsEnumerable(),
+                TotalCount = totalCount
+            };
+        }                 
 
         public ProductDTO GetProductById(int id)
         {
@@ -54,5 +71,9 @@ namespace WebStore.Services
 
             return product == null ? null : _Mapper.Map<ProductDTO>(product);       
         }
+
+        public SectionDTO GetSectionById(int id) => _Mapper.Map<SectionDTO>(_db.Sections.Find(id));
+
+        public BrandDTO GetBrandById(int id) => _Mapper.Map<BrandDTO>(_db.Brands.Find(id));
     }
 }

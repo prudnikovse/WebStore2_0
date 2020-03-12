@@ -4,6 +4,8 @@
     ViewData["Title"] = "Shop";
 }
 
+<vc:bread-crumbs />
+
 <partial name="Partial/_Advertisement" />
 
 <section>
@@ -14,6 +16,13 @@
             </div>
 
             <partial name="Partial/_FeaturesItem" model="@Model.Products" />
+
+            <paging page-model="@Model.PageViewModel" 
+                    page-action="Shop"
+                    page-url-SectionId="@Model.SectionId"
+                    page-url-BrandId="@Model.BrandId">
+
+            </paging>
         </div>
     </div>
 </section>
