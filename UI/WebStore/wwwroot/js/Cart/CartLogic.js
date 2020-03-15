@@ -25,25 +25,26 @@ Cart = {
         let button = $(this)
         const id = button.data("id")
 
-        $.get(`${Cart._properties.addToCartLink}/${id}`)
-            .done(() => {
+        fetch(`${Cart._properties.addToCartLink}/${id}`)
+            .then(() => {
                 Cart.showToolTip(button)
                 Cart.refreshCartView()
             })
-            .fail(function () { console.log("Add to cart fail") })
+            .catch(res => { console.log(`Add to cart fail. ${res.statusText}`) })
     },
     showToolTip: function (button) {
         button.tooltip({ title: "добавлено в корзину" }).tooltip("show")
-        setTimeout(function () { button.tooltip("destroy") }, 1000)
+        setTimeout(() => button.tooltip("destroy"), 1000)
     },
-    refreshCartView: function () {
+    refreshCartView: async function() {
         let container = $("#cart-container")
 
-        $.get(Cart._properties.getCartViewLink)
-            .done((content) => {
-                container.html(content)
-            })
-            .fail(function () { console.log("refreshCartView fail") })
+        var response = await fetch(Cart._properties.getCartViewLink)
+
+        if (response.ok) 
+            container.html(await response.text())
+        else
+            console.log(`refreshCartView fail. ${response.statusText}`)
     },
     incrementItem: function (event) {
         event.preventDefault()
@@ -53,14 +54,14 @@ Cart = {
 
         let container = button.closest("tr")
 
-        $.get(`${Cart._properties.addToCartLink}/${id}`)
-            .done(() => {
+        fetch(`${Cart._properties.addToCartLink}/${id}`)
+            .then(() => {
                 const count = parseInt($(".cart_quantity_input", container).val())
                 $(".cart_quantity_input", container).val(count + 1)
                 Cart.refreshPrice(container)
                 Cart.refreshCartView()
             })
-            .fail(function () { console.log("Add to cart fail") })
+            .catch(res => { console.log(`Add to cart fail. ${res.statusText}`) })
     },
     decrementItem: function (event) {
         event.preventDefault()
@@ -70,12 +71,12 @@ Cart = {
 
         let container = button.closest("tr")
 
-        $.get(`${Cart._properties.decrementLink}/${id}`)
-            .done(() => {
+        fetch(`${Cart._properties.decrementLink}/${id}`)
+            .then(() => {
                 const count = parseInt($(".cart_quantity_input", container).val())
                 if (count > 1) {
                     $(".cart_quantity_input", container).val(count - 1)
-                    Cart.refreshPrice(container)                  
+                    Cart.refreshPrice(container)
                 } else {
                     container.remove()
                     Cart.refreshTotalPrice()
@@ -83,7 +84,7 @@ Cart = {
 
                 Cart.refreshCartView()
             })
-            .fail(() => console.log("Decrement from cart fail"))
+            .catch(res => { console.log(`Decrement from cart fail. ${res.statusText}`) })      
     },
     removeFromCart: function (event) {
         event.preventDefault()
@@ -91,15 +92,15 @@ Cart = {
         let button = $(this)
         const id = button.data("id")
 
-        $.get(`${Cart._properties.removeFromCartLink}/${id}`)
-            .done(() => {
+        fetch(`${Cart._properties.removeFromCartLink}/${id}`)
+            .then(() => {
                 button.closest("tr").remove();
                 Cart.refreshTotalPrice()
                 Cart.refreshCartView()
             })
-            .fail(() => console.log("Remove from cart fail"))
+            .catch(res => { console.log(`Remove from cart fail. ${res.statusText}`) })
     },
-    refreshPrice: function (container) {
+    refreshPrice: function(container) {
         const quantity = parseInt($(".cart_quantity_input", container).val())
         const price = parseFloat($(".cart_price", container).data("price"))
         const totalPrice = price * quantity
@@ -110,7 +111,7 @@ Cart = {
 
         Cart.refreshTotalPrice();
     },
-    refreshTotalPrice: function () {
+    refreshTotalPrice: function() {
         let total = 0;
 
         $(".cart_total_price").each(function () {
