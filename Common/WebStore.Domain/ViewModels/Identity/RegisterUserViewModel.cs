@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,21 +11,22 @@ namespace WebStore.Domain.ViewModels.Identity
 {
     public class RegisterUserViewModel
     {
-        [Required]
-        [MaxLength(256)]
-        //[Remote(nameof(AccountController.IsNameFree), "Account", ErrorMessage = "Пользователь с таким именем уже существует.")]
+        [Required(ErrorMessage = "Имя пользователя обязательно для заполнения")]
+        [MaxLength(256, ErrorMessage = "Максимальная длина поля не должна превышать 256 символов")]
+        [Remote("IsNameFree", "Account", ErrorMessage = "Пользователь с таким именем уже существует.")]
         [Display(Name = "Имя пользователя")]
+        [RegularExpression(@"[A-Za-z][A-Za-z0-9_]{3,}", ErrorMessage = "Некорректное имя пользователя")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Не указан пароль")]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Подтвердите ввод пароля")]
         [DataType(DataType.Password)]
         [Display(Name = "Подтвердите ввод пароля")]
-        [Compare(nameof(Password))]
+        [Compare(nameof(Password), ErrorMessage = "Пароли не совпадают")]
         public string ConfirmPassword { get; set; }
     }
 }
