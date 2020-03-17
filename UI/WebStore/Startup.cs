@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using WebStore.Clients;
 using WebStore.Clients.Identity;
 using WebStore.Domain.Entities.Identity;
+using WebStore.Hubs;
 using WebStore.Infrastructure.AutoMapper;
 using WebStore.Infrastructure.Middleware;
 using WebStore.Interfaces.Api;
@@ -29,6 +30,8 @@ namespace WebStore
             //services.AddDbContext<WebStoreContext>(opt => 
             //    opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //services.AddTransient<WebStoreContextInitializer>();
+
+            services.AddSignalR();
 
             services.AddAutoMapper(opt =>
             {
@@ -119,6 +122,11 @@ namespace WebStore
 
             //app.UseSession();
             app.UseMiddleware<ErrorHandlingMiddleware>();
+
+            app.UseSignalR(route =>
+            {
+                route.MapHub<InformationHub>("/info");
+            });
 
             app.UseMvc(routes =>
             {

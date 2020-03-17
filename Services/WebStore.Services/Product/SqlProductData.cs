@@ -55,11 +55,13 @@ namespace WebStore.Services
                 query = query.Skip((Filter.Page - 1) * Filter.PageSize.Value)
                     .Take(Filter.PageSize.Value);
           
-            return new PageProductsDTO
+            var res =  new PageProductsDTO
             {
                 Products = query.Select(_Mapper.Map<ProductDTO>).AsEnumerable(),
                 TotalCount = totalCount
             };
+
+            return res;
         }                 
 
         public ProductDTO GetProductById(int id)

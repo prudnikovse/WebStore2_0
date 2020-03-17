@@ -15,9 +15,13 @@
                 <partial name="Partial/_LeftSideBar" />
             </div>
 
-            <partial name="Partial/_FeaturesItem" model="@Model.Products" />
 
-            <paging page-model="@Model.PageViewModel" 
+            <div id="catalog-items-container">
+                <partial name="Partial/_FeaturesItem" model="@Model.Products" />
+            </div>
+
+
+            <paging page-model="@Model.PageViewModel"
                     page-action="Shop"
                     page-url-SectionId="@Model.SectionId"
                     page-url-BrandId="@Model.BrandId">
@@ -26,4 +30,18 @@
         </div>
     </div>
 </section>
+
+@section Scripts
+{
+    <script src="~/lib/jquery-loading-overlay/loadingoverlay.min.js"></script>
+    <script src="~/js/Shop/ProductItems.js" asp-append-version="true"></script>
+
+    <script>
+        $(function () {
+        ProductItems.init({
+            getUrl: '@Url.Action("GetFiltratedItems", "Catalog")'
+        })
+    })
+    </script>   
+}
 

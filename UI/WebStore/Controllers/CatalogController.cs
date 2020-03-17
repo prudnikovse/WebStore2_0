@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using WebStore.Domain.DTO.Products;
 using WebStore.Domain.Entities;
 using WebStore.Domain.ViewModels;
 using WebStore.Interfaces.Services;
@@ -66,5 +67,26 @@ namespace WebStore.Controllers
                  Brand = product.Brand?.Name
             });
         }
+
+        #region API
+
+        public IActionResult GetFiltratedItems(int? SectionId, int? BrandId, [FromServices] IMapper Mapper, int Page = 1)
+        {
+            var products = GetProducts(SectionId, BrandId, Page);
+            return PartialView("Partial/_FeaturesItem", products.Select(Mapper.Map<ProductViewModel>));
+        }
+
+        private IEnumerable<ProductDTO> GetProducts(int? SectionId, int? BrandId, int Page)
+        {
+            return _ProductData.GetProducts(new ProductFilter
+            {
+                SectionId = SectionId,
+                BrandId = BrandId,
+                Page = Page,
+                PageSize = int.TryParse(_Configuration["PageSize"].ToString(), out var pageSize) ? pageSize : 50
+            })?.Products;
+        }
+      
+        #endregion
     }
 }
