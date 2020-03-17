@@ -41,6 +41,8 @@ ProductItems = {
                         .removeAttr('href')
                         .parent()
                         .addClass('active')
+
+                    Cart.initEvents()
                 })
                 .catch(() => {
                     container.LoadingOverlay('hide')
